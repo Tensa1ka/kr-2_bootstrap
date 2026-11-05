@@ -1,0 +1,549 @@
+<!doctype html>
+
+<html
+  data-bs-theme="dark"
+  lang="ru"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1"
+      name="viewport"
+    />
+    <title>Портфолио и отзывы — детейлинг-студия Блик</title>
+    <meta
+      content="Работы студии Блик до и после: полировка, керамика, плёнка, химчистка. Отзывы клиентов с оценками."
+      name="description"
+    />
+    <meta
+      content="#1b1f24"
+      name="theme-color"
+    />
+    <meta
+      content="website"
+      property="og:type"
+    />
+    <meta
+      content="ru_RU"
+      property="og:locale"
+    />
+    <meta
+      content="Блик"
+      property="og:site_name"
+    />
+    <meta
+      content="Портфолио и отзывы — детейлинг-студия Блик"
+      property="og:title"
+    />
+    <meta
+      content="Работы студии Блик до и после: полировка, керамика, плёнка, химчистка. Отзывы клиентов с оценками."
+      property="og:description"
+    />
+    <meta
+      content="assets/img/hero.webp"
+      property="og:image"
+    />
+    <link
+      href="assets/img/favicon.svg"
+      rel="icon"
+      type="image/svg+xml"
+    />
+    <link
+      href="https://fonts.googleapis.com"
+      rel="preconnect"
+    />
+    <link
+      crossorigin=""
+      href="https://fonts.gstatic.com"
+      rel="preconnect"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&amp;family=Unbounded:wght@500;600&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="assets/vendor/bootstrap/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="assets/css/styles.css"
+      rel="stylesheet"
+    />
+    <script
+      defer=""
+      src="assets/vendor/bootstrap/bootstrap.bundle.min.js"
+    ></script>
+    <script
+      defer=""
+      src="assets/js/data.js"
+    ></script>
+    <script
+      defer=""
+      src="assets/js/api.js"
+    ></script>
+    <script
+      defer=""
+      src="assets/js/ui.js"
+    ></script>
+    <script
+      defer=""
+      src="assets/js/portfolio.js"
+    ></script>
+  </head>
+  <body data-page="portfolio">
+    <a
+      class="skip-link"
+      href="#main"
+      >Перейти к содержанию</a
+    >
+    <noscript
+      ><p class="noscript">
+        Списки услуг, работ и отзывов загружаются скриптом. Включите JavaScript или позвоните нам:
+        +7(495)-123-32-49.
+      </p></noscript
+    >
+    <header class="site-header navbar navbar-expand-xl sticky-top">
+      <div class="container gap-3">
+        <a
+          class="logo navbar-brand me-auto"
+          href="index.html"
+          ><svg
+            aria-hidden="true"
+            viewbox="0 0 64 64"
+          >
+            <rect
+              fill="#2c323a"
+              height="64"
+              rx="16"
+              width="64"
+            ></rect>
+            <path
+              d="M14 44c8-14 20-24 36-28"
+              fill="none"
+              stroke="#eef2f5"
+              stroke-linecap="round"
+              stroke-width="7"
+            ></path>
+            <path
+              d="M22 50c6-8 14-14 24-17"
+              fill="none"
+              stroke="#a3adb8"
+              stroke-linecap="round"
+              stroke-width="4"
+            ></path></svg
+          ><span>блик</span></a
+        >
+        <nav
+          aria-label="Основное меню"
+          class="navbar-nav d-none d-xl-flex gap-1"
+        >
+          <a
+            class="nav-link"
+            href="index.html"
+            >Главная</a
+          >
+          <a
+            class="nav-link"
+            href="services.html"
+            >Услуги и цены</a
+          >
+          <a
+            aria-current="page"
+            class="nav-link active"
+            href="portfolio.html"
+            >Портфолио и отзывы</a
+          >
+          <a
+            class="nav-link"
+            href="about.html"
+            >О студии и контакты</a
+          >
+        </nav>
+        <a
+          class="d-none d-xxl-block text-decoration-none text-nowrap"
+          href="tel:+74951233249"
+          >+7(495)-123-32-49</a
+        >
+        <a
+          class="btn btn-light btn-sm d-none d-xl-inline-flex"
+          data-booking=""
+          href="about.html#request"
+          >Записаться</a
+        >
+        <button
+          aria-controls="mobile-menu"
+          aria-label="Открыть меню"
+          class="navbar-toggler"
+          data-bs-target="#mobile-menu"
+          data-bs-toggle="offcanvas"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            fill="none"
+            height="20"
+            viewbox="0 0 20 20"
+            width="20"
+          >
+            <path
+              d="M3 6h14M3 14h14"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-width="2"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+    <div
+      aria-labelledby="mobile-menu-title"
+      class="offcanvas offcanvas-end"
+      id="mobile-menu"
+      tabindex="-1"
+    >
+      <div class="offcanvas-header">
+        <h2
+          class="offcanvas-title h5"
+          id="mobile-menu-title"
+        >
+          Меню
+        </h2>
+        <button
+          aria-label="Закрыть меню"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+          type="button"
+        ></button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column gap-4">
+        <nav
+          aria-label="Меню"
+          class="nav flex-column gap-2"
+        >
+          <a
+            class="nav-link"
+            href="index.html"
+            >Главная</a
+          >
+          <a
+            class="nav-link"
+            href="services.html"
+            >Услуги и цены</a
+          >
+          <a
+            aria-current="page"
+            class="nav-link active"
+            href="portfolio.html"
+            >Портфолио и отзывы</a
+          >
+          <a
+            class="nav-link"
+            href="about.html"
+            >О студии и контакты</a
+          >
+        </nav>
+        <div class="mobile-menu__contacts">
+          <a
+            class="contacts__big"
+            href="tel:+74951233249"
+            >+7(495)-123-32-49</a
+          >
+          <span class="muted">Ежедневно, будни 9:00–21:00, выходные 10:00–20:00</span>
+          <a
+            class="btn btn-light"
+            data-booking=""
+            href="about.html#request"
+            >Записаться на осмотр</a
+          >
+        </div>
+      </div>
+    </div>
+    <main id="main">
+      <section
+        aria-labelledby="page-title"
+        class="page-hero"
+      >
+        <div class="container page-hero__inner">
+          <h1
+            class="page-hero__title"
+            id="page-title"
+          >
+            Портфолио и отзывы
+          </h1>
+          <p class="lead">
+            Машины, которые прошли через студию за последний год. Нажмите на фото, чтобы прочитать,
+            что делали и сколько это заняло.
+          </p>
+          <nav
+            aria-label="Разделы страницы"
+            class="page-nav"
+          >
+            <a
+              class="chip"
+              href="#works"
+              >Работы</a
+            >
+            <a
+              class="chip"
+              href="#before-after"
+              >До и после</a
+            >
+            <a
+              class="chip"
+              href="#reviews"
+              >Отзывы</a
+            >
+          </nav>
+        </div>
+      </section>
+      <section
+        aria-labelledby="works-title"
+        class="section"
+        id="works"
+        style="padding-top: 0"
+      >
+        <div class="container">
+          <h2
+            class="visually-hidden"
+            id="works-title"
+          >
+            Работы
+          </h2>
+          <div
+            aria-label="Фильтр по услуге"
+            class="chips"
+            id="gallery-filter"
+            role="group"
+          ></div>
+          <p
+            aria-live="polite"
+            class="visually-hidden"
+            id="gallery-status"
+          ></p>
+          <div
+            class="gallery"
+            id="gallery"
+          >
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+          </div>
+        </div>
+      </section>
+      <section
+        aria-labelledby="ba-title"
+        class="section section--surface"
+        id="before-after"
+      >
+        <div class="container">
+          <div class="section-head">
+            <div class="section-head__text">
+              <h2
+                class="h2"
+                id="ba-title"
+              >
+                До и после
+              </h2>
+              <p class="lead">
+                Одна и та же машина до работы и после. Сдвиньте границу на снимке или используйте
+                стрелки на клавиатуре.
+              </p>
+            </div>
+            <div
+              aria-label="Работы"
+              class="nav nav-pills gap-2"
+              id="ba-tabs"
+              role="tablist"
+            ></div>
+          </div>
+          <div
+            id="ba-panel"
+            role="tabpanel"
+          >
+            <div
+              class="skeleton"
+              style="aspect-ratio: 16 / 9"
+            ></div>
+          </div>
+        </div>
+      </section>
+      <section
+        aria-labelledby="reviews-title"
+        class="section"
+        id="reviews"
+      >
+        <div class="container">
+          <div class="section-head">
+            <div class="section-head__text">
+              <h2
+                class="h2"
+                id="reviews-title"
+              >
+                Отзывы клиентов
+              </h2>
+              <p class="lead">
+                Публикуем все отзывы, включая критические. Отвечаем на каждый в течение дня.
+              </p>
+            </div>
+          </div>
+          <div class="row g-4 align-items-start">
+            <div class="col-12 col-lg-4">
+              <aside
+                aria-label="Сводка оценок"
+                class="reviews-aside"
+                id="reviews-summary"
+              >
+                <div
+                  class="skeleton"
+                  style="min-height: 280px"
+                ></div>
+              </aside>
+            </div>
+            <div class="col-12 col-lg-8">
+              <div>
+                <form
+                  class="reviews-controls"
+                  id="reviews-controls"
+                >
+                  <div class="field">
+                    <label
+                      class="form-label"
+                      for="rv-service"
+                      >Услуга</label
+                    >
+                    <select
+                      class="form-select"
+                      id="rv-service"
+                      name="service"
+                    >
+                      <option value="">Все услуги</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label
+                      class="form-label"
+                      for="rv-sort"
+                      >Сортировка</label
+                    >
+                    <select
+                      class="form-select"
+                      id="rv-sort"
+                      name="sort"
+                    >
+                      <option value="new">Сначала новые</option>
+                      <option value="high">Сначала высокие оценки</option>
+                      <option value="low">Сначала низкие оценки</option>
+                    </select>
+                  </div>
+                </form>
+                <p
+                  aria-live="polite"
+                  class="visually-hidden"
+                  id="reviews-status"
+                ></p>
+                <div
+                  class="reviews-grid"
+                  id="reviews-list"
+                >
+                  <div class="skeleton"></div>
+                  <div class="skeleton"></div>
+                </div>
+                <div
+                  class="reviews-more"
+                  id="reviews-more"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+          <div class="site-footer__col col">
+            <a
+              class="logo"
+              href="index.html"
+              ><svg
+                aria-hidden="true"
+                viewbox="0 0 64 64"
+              >
+                <rect
+                  fill="#2c323a"
+                  height="64"
+                  rx="16"
+                  width="64"
+                ></rect>
+                <path
+                  d="M14 44c8-14 20-24 36-28"
+                  fill="none"
+                  stroke="#eef2f5"
+                  stroke-linecap="round"
+                  stroke-width="7"
+                ></path>
+                <path
+                  d="M22 50c6-8 14-14 24-17"
+                  fill="none"
+                  stroke="#a3adb8"
+                  stroke-linecap="round"
+                  stroke-width="4"
+                ></path></svg
+              ><span>блик</span></a
+            >
+            <p>
+              Детейлинг-студия в Москве. Полировка, керамика, плёнка, химчистка, мойка, тонировка и
+              шумоизоляция.
+            </p>
+          </div>
+          <div class="site-footer__col col">
+            <h2 class="site-footer__title">Разделы</h2>
+            <a href="index.html">Главная</a>
+            <a href="services.html">Услуги и цены</a>
+            <a href="portfolio.html">Портфолио и отзывы</a>
+            <a href="about.html">О студии и контакты</a>
+          </div>
+          <div class="site-footer__col col">
+            <h2 class="site-footer__title">Контакты</h2>
+            <a href="tel:+74951233249">+7(495)-123-32-49</a>
+            <a href="mailto:hello@blik-detailing.ru">hello@blik-detailing.ru</a>
+            <address>Москва, ул. Электрозаводская, 27, стр. 8</address>
+          </div>
+          <div class="site-footer__col col">
+            <h2 class="site-footer__title">Часы работы</h2>
+            <p>Будни 9:00–21:00</p>
+            <p>Выходные 10:00–20:00</p>
+            <p>Машины принимаем до 19:00</p>
+            <button
+              class="btn btn-light mt-2 booking-button-compact"
+              data-booking
+              type="button"
+            >
+              Записаться
+            </button>
+          </div>
+        </div>
+        <div class="site-footer__bottom">
+          <p>© <span data-year="">2026</span> Блик. Все права защищены.</p>
+          <button
+            class="link-btn"
+            data-policy=""
+            type="button"
+          >
+            Политика конфиденциальности
+          </button>
+        </div>
+      </div>
+    </footer>
+    <button
+      class="btn btn-light back-to-top"
+      type="button"
+      data-back-to-top
+      aria-label="Плавно прокрутить страницу наверх"
+      hidden
+    >
+      <span>Наверх</span>
+    </button>
+  </body>
+</html>
