@@ -86,6 +86,14 @@
       src="assets/js/ui.js"
     ></script>
     <script
+      src="assets/js/experience.js"
+      defer
+    ></script>
+    <script
+      src="assets/js/stories.js"
+      defer
+    ></script>
+    <script
       defer=""
       src="assets/js/portfolio.js"
     ></script>
@@ -309,6 +317,22 @@
           >
             Работы
           </h2>
+          <div class="feature-actions mb-4">
+            <button
+              class="btn btn-outline-light btn-sm"
+              type="button"
+              id="favorites-filter"
+              aria-pressed="false"
+            >
+              Избранное <span data-favorites-count>0</span>
+            </button>
+            <p
+              class="muted small"
+              id="favorites-note"
+            >
+              Отмечайте работы сердцем — выбор сохранится в этом браузере.
+            </p>
+          </div>
           <div
             aria-label="Фильтр по услуге"
             class="chips"

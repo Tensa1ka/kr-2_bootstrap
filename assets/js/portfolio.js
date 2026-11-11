@@ -4,6 +4,10 @@
 
   const B = window.Blik;
   const api = window.BlikAPI;
+  const X = window.BlikExperience;
+  let allWorks = [];
+  let activeService = new URLSearchParams(location.search).get('service') || '';
+  let favoritesOnly = new URLSearchParams(location.search).get('favorites') === '1';
 
   let services = [];
   const titles = {};
@@ -40,123 +44,110 @@
       .join('');
   }
 
+  function favoriteButton(work) {
+    const selected = X.storage.favorites().includes(work.id);
+    return `<button class="favorite-button" type="button" data-favorite="${work.id}" aria-pressed="${selected}" aria-label="${selected ? 'Удалить из избранного: ' : 'Добавить в избранное: '}${B.esc(work.car)}"><span aria-hidden="true">${selected ? '♥' : '♡'}</span></button>`;
+  }
+
   function renderGallery(list) {
     works = list;
     const root = B.$('#gallery');
     if (!list.length) {
-      root.innerHTML =
-        '<div class="empty" style="grid-column: 1 / -1"><p>По этой услуге работ в портфолио пока нет. Фото появятся, как только закончим первые машины.</p>' +
-        '<button class="btn btn-outline-light btn-sm" type="button" data-filter="">Показать все работы</button></div>';
+      root.innerHTML = `<div class="empty gallery-empty"><p>${favoritesOnly ? 'В этом разделе пока нет избранных работ. Нажмите сердце на понравившейся карточке.' : 'По этой услуге работ пока нет.'}</p><button class="btn btn-outline-light btn-sm" type="button" data-show-all>Показать все работы</button></div>`;
       return;
     }
     root.innerHTML = list
-      .map(function (w, i) {
+      .map(function (w) {
         const mod = w.size ? ' gallery__item--' + w.size : '';
-        return (
-          '<button class="gallery__item' +
-          mod +
-          '" type="button" data-work="' +
-          i +
-          '" aria-haspopup="dialog">' +
-          '<img src="' +
-          B.esc(w.image) +
-          '" alt="' +
-          B.esc(w.alt) +
-          '" width="1400" height="933" loading="lazy" decoding="async">' +
-          '<span class="gallery__caption"><strong>' +
-          B.esc(w.car) +
-          '</strong><span>' +
-          B.esc(
-            w.services
-              .map(function (s) {
-                return titles[s];
-              })
-              .join(', '),
-          ) +
-          '</span></span></button>'
-        );
+        return `<div class="gallery-tile${mod}">
+        <button class="gallery__item" type="button" data-work="${w.id}" aria-haspopup="dialog">
+          <img src="${B.esc(w.image)}" alt="${B.esc(w.alt)}" width="1400" height="933" loading="lazy" decoding="async">
+          <span class="gallery__caption"><strong>${B.esc(w.car)}</strong><span>${B.esc(w.services.map((s) => titles[s]).join(', '))}</span></span>
+        </button>${favoriteButton(w)}</div>`;
       })
       .join('');
   }
 
   function applyFilter(slug) {
-    B.$$('#gallery-filter [data-filter]').forEach(function (chip) {
-      chip.setAttribute('aria-pressed', String(chip.dataset.filter === slug));
-    });
+    activeService = slug;
+    B.$$('#gallery-filter [data-filter]').forEach((chip) =>
+      chip.setAttribute('aria-pressed', String(chip.dataset.filter === slug)),
+    );
+    const ids = X.storage.favorites();
+    const matching = allWorks.filter(
+      (w) => (!slug || w.services.includes(slug)) && (!favoritesOnly || ids.includes(w.id)),
+    );
+    renderGallery(matching);
+    const shown = allWorks.filter((w) => ids.includes(w.id)).length;
+    B.$('[data-favorites-count]').textContent = shown;
+    B.$('#favorites-filter').setAttribute('aria-pressed', String(favoritesOnly));
+    B.$('#favorites-note').textContent = X.storage.persistent()
+      ? 'Отмечайте работы сердцем — выбор сохранится в этом браузере.'
+      : 'Сохранение в браузере недоступно. Избранное действует до закрытия страницы.';
     const url = new URL(location.href);
     if (slug) url.searchParams.set('service', slug);
     else url.searchParams.delete('service');
+    if (favoritesOnly) url.searchParams.set('favorites', '1');
+    else url.searchParams.delete('favorites');
     history.replaceState(null, '', url.pathname + url.search + url.hash);
-
-    B.load(
-      B.$('#gallery'),
-      function () {
-        return api.getPortfolio({ service: slug });
-      },
-      function (list) {
-        renderGallery(list);
-        B.$('#gallery-status').textContent =
-          'Показано ' + list.length + ' ' + B.plural(list.length, ['работа', 'работы', 'работ']);
-      },
-      'Не удалось загрузить работы. Попробуйте ещё раз.',
-    );
+    B.$('#gallery-status').textContent =
+      'Показано ' +
+      matching.length +
+      ' ' +
+      B.plural(matching.length, ['работа', 'работы', 'работ']);
   }
 
-  function openWork(index) {
-    const w = works[index];
+  function stepWork(direction) {
+    if (!works.length) return;
+    const index = works.findIndex((w) => w.id === Number(lightbox.dataset.workId));
+    const next =
+      index < 0
+        ? direction > 0
+          ? 0
+          : works.length - 1
+        : (index + direction + works.length) % works.length;
+    openWork(works[next].id);
+  }
+
+  function openWork(id) {
+    const w = allWorks.find((work) => work.id === id);
     if (!w) return;
     if (!lightbox) {
       lightbox = B.createDialog('work', '', 'dialog--wide');
-      lightbox.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowRight') openWork((Number(lightbox.dataset.index) + 1) % works.length);
-        if (e.key === 'ArrowLeft')
-          openWork((Number(lightbox.dataset.index) - 1 + works.length) % works.length);
+      lightbox.addEventListener('keydown', function (event) {
+        if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          stepWork(1);
+        }
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          stepWork(-1);
+        }
       });
     }
-    lightbox.dataset.index = index;
+    lightbox.dataset.workId = id;
     B.$('.dialog__title', lightbox).textContent = w.car;
-    B.$('.dialog__body', lightbox).innerHTML =
-      '<img class="lightbox__img" src="' +
-      B.esc(w.image) +
-      '" alt="' +
-      B.esc(w.alt) +
-      '" width="1400" height="933">' +
-      '<p>' +
-      B.esc(w.text) +
-      '</p>' +
-      '<dl class="meta" style="max-width: 520px">' +
-      '<div><dt>Услуги</dt><dd>' +
-      B.esc(
-        w.services
-          .map(function (s) {
-            return titles[s];
-          })
-          .join(', '),
-      ) +
-      '</dd></div>' +
-      '<div><dt>Срок</dt><dd>' +
-      B.esc(w.duration) +
-      '</dd></div></dl>' +
-      '<div class="lightbox__nav">' +
-      '<button class="btn btn-outline-light btn-sm" type="button" data-step="-1">Предыдущая работа</button>' +
-      '<span class="muted" aria-live="polite">' +
-      (index + 1) +
-      ' из ' +
-      works.length +
-      '</span>' +
-      '<button class="btn btn-outline-light btn-sm" type="button" data-step="1">Следующая работа</button></div>' +
-      '<a class="btn btn-light" href="about.html#request" data-booking data-service="' +
-      w.services[0] +
-      '" data-comment="Хочу так же, как ' +
-      B.esc(w.car) +
-      ' из портфолио">Хочу так же</a>';
-    B.$$('[data-step]', lightbox).forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        openWork((index + Number(btn.dataset.step) + works.length) % works.length);
-        B.$('[data-step="' + btn.dataset.step + '"]', lightbox).focus();
+    const index = works.findIndex((work) => work.id === id);
+    B.$('.dialog__body', lightbox).innerHTML = `
+      <img class="lightbox__img" src="${B.esc(w.image)}" alt="${B.esc(w.alt)}" width="1400" height="933">
+      <div class="story-favorite">${favoriteButton(w)}<span class="muted small">Сохранить эту работу в избранное</span></div>
+      ${window.BlikStories.render(w, services)}
+      <div class="lightbox__nav">
+        <button class="btn btn-outline-light btn-sm" type="button" data-step="-1" ${works.length ? '' : 'disabled'}>Предыдущая работа</button>
+        <span class="muted" aria-live="polite">${index >= 0 ? index + 1 : '—'} из ${works.length}</span>
+        <button class="btn btn-outline-light btn-sm" type="button" data-step="1" ${works.length ? '' : 'disabled'}>Следующая работа</button>
+      </div>
+      <div class="feature-actions"><a class="btn btn-light feature-action" href="about.html#request" data-booking data-service="${B.esc(w.services[0])}" data-comment="${B.esc('Хочу так же, как ' + w.car + ' из портфолио')}">Хочу так же</a>
+      <button class="btn btn-outline-light btn-sm" type="button" data-care-services="${w.services.join(',')}">Памятка после работ</button></div>`;
+    B.$$('[data-step]', lightbox).forEach(function (button) {
+      button.addEventListener('click', function () {
+        const step = button.dataset.step;
+        stepWork(Number(step));
+        B.$('[data-step="' + step + '"]', lightbox).focus();
       });
     });
     B.openDialog(lightbox);
+    B.$('.modal-body', lightbox).scrollTop = 0;
   }
 
   /* ---------- До / после ---------- */
@@ -355,9 +346,9 @@
         })
           ? initial
           : '';
-        renderFilter(data[1], valid);
-        if (valid) applyFilter(valid);
-        else renderGallery(data[1]);
+        allWorks = data[1];
+        renderFilter(allWorks, valid);
+        applyFilter(valid);
 
         const select = B.$('#rv-service');
         services.forEach(function (s) {
@@ -375,7 +366,36 @@
       'Не удалось загрузить портфолио. Попробуйте ещё раз.',
     );
 
+    B.$('#favorites-filter').addEventListener('click', function () {
+      favoritesOnly = !favoritesOnly;
+      applyFilter(activeService);
+    });
+    window.addEventListener('blik:preferences', function () {
+      if (!allWorks.length) return;
+      applyFilter(activeService);
+      if (lightbox)
+        B.$$('[data-favorite]', lightbox).forEach(function (button) {
+          const work = allWorks.find((w) => w.id === Number(button.dataset.favorite));
+          if (work) button.outerHTML = favoriteButton(work);
+        });
+    });
     document.addEventListener('click', function (e) {
+      const favorite = e.target.closest('[data-favorite]');
+      if (favorite) {
+        const id = Number(favorite.dataset.favorite);
+        if (!allWorks.some((w) => w.id === id)) return;
+        const inModal = favorite.closest('.modal');
+        const saved = X.storage.toggleFavorite(id);
+        // Rendering replaces the button; keep keyboard focus at the same control if possible.
+        const next = B.$('[data-favorite="' + id + '"]', inModal || B.$('#gallery'));
+        (next || B.$('#favorites-filter')).focus();
+        if (!saved) B.toast('Сохранение недоступно: выбор действует до закрытия страницы.');
+        return;
+      }
+      if (e.target.closest('[data-show-all]')) {
+        favoritesOnly = false;
+        applyFilter('');
+      }
       const f = e.target.closest('[data-filter]');
       if (f) applyFilter(f.dataset.filter);
       const w = e.target.closest('[data-work]');

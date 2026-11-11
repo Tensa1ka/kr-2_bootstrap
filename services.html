@@ -86,6 +86,10 @@
       src="assets/js/ui.js"
     ></script>
     <script
+      src="assets/js/experience.js"
+      defer
+    ></script>
+    <script
       defer=""
       src="assets/js/services.js"
     ></script>
@@ -280,6 +284,19 @@
           >
             <a
               class="chip"
+              href="#care-quiz"
+              >Подбор ухода</a
+            ><a
+              class="chip"
+              href="#protection"
+              >Сравнение покрытий</a
+            ><a
+              class="chip"
+              href="#care-guide"
+              >Памятка</a
+            >
+            <a
+              class="chip"
               href="#all-services"
               >Все услуги</a
             >
@@ -296,6 +313,43 @@
           </nav>
         </div>
       </section>
+      <section
+        class="section section--surface"
+        id="care-quiz"
+        aria-labelledby="care-quiz-title"
+      >
+        <div class="container">
+          <div class="row g-4 align-items-start">
+            <div class="col-12 col-lg-5 section-head__text">
+              <p class="eyebrow">Уход под вашу задачу</p>
+              <h2
+                class="h2"
+                id="care-quiz-title"
+              >
+                Что нужно вашему автомобилю?
+              </h2>
+              <p class="lead">
+                Пять коротких вопросов о машине, кузове, задаче и бюджете. Подберём отправную точку
+                и перенесём услуги в расчёт.
+              </p>
+              <p class="muted">
+                Рекомендация предварительная. Повреждения краски и состояние лака оцениваем на
+                бесплатном осмотре.
+              </p>
+            </div>
+            <div class="col-12 col-lg-7">
+              <div
+                class="feature-panel"
+                data-care-quiz
+                aria-label="Подбор ухода"
+              >
+                <p class="muted">Загружаем вопросы…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section
         aria-labelledby="all-title"
         class="section"
@@ -326,6 +380,31 @@
               style="min-height: 520px"
             ></div>
           </div>
+        </div>
+      </section>
+
+      <section
+        class="section"
+        id="protection"
+        aria-labelledby="protection-title"
+      >
+        <div class="container">
+          <div class="section-head">
+            <div class="section-head__text">
+              <p class="eyebrow">Выбрать защиту</p>
+              <h2
+                class="h2"
+                id="protection-title"
+              >
+                Воск, керамика или плёнка?
+              </h2>
+              <p class="lead">
+                Сравните задачи, срок службы, уход и стоимость. Плёнка защищает от механических
+                повреждений; воск и керамика облегчают уход.
+              </p>
+            </div>
+          </div>
+          <div id="protection-comparison"><p class="muted">Загружаем сравнение…</p></div>
         </div>
       </section>
       <section
@@ -401,6 +480,44 @@
             <div
               class="skeleton"
               style="min-height: 360px"
+            ></div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="section section--surface"
+        id="care-guide"
+        aria-labelledby="care-guide-title"
+      >
+        <div class="container">
+          <div class="section-head">
+            <div class="section-head__text">
+              <p class="eyebrow">После визита в студию</p>
+              <h2
+                class="h2"
+                id="care-guide-title"
+              >
+                Как сохранить результат
+              </h2>
+              <p class="lead">
+                Выберите услугу: расскажем, когда можно мыть машину, чего избегать и когда проверить
+                покрытие.
+              </p>
+            </div>
+          </div>
+          <div class="row g-4">
+            <div class="col-12 col-lg-4">
+              <form
+                id="care-picker"
+                class="feature-panel care-picker"
+              >
+                <p class="muted">Загружаем рекомендации…</p>
+              </form>
+            </div>
+            <div
+              class="col-12 col-lg-8"
+              id="care-preview"
             ></div>
           </div>
         </div>

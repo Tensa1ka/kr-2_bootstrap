@@ -4,6 +4,7 @@
 
   const B = window.Blik;
   const api = window.BlikAPI;
+  const X = window.BlikExperience;
 
   let services = [];
   let classes = [];
@@ -137,6 +138,12 @@
       B.esc(s.title.toLowerCase()) +
       '</a>' +
       '</aside></div>';
+    B.$('.dialog__body', detailDialog).insertAdjacentHTML(
+      'beforeend',
+      '<button class="btn btn-outline-light btn-sm feature-action" type="button" data-care-services="' +
+        B.esc(s.slug) +
+        '">Памятка после услуги</button>',
+    );
     B.openDialog(detailDialog);
     if (updateHash) history.replaceState(null, '', '#' + slug);
   }
@@ -224,6 +231,43 @@
 
   /* ---------- Калькулятор ---------- */
   const state = { carClass: 2, items: {} };
+
+  let restoredMessage = '';
+
+  function restoreCalculator() {
+    const url = new URL(location.href);
+    let plan = X.storage.loadPlan(services);
+    restoredMessage = Object.keys(plan.items).length ? 'Восстановлен ваш сохранённый расчёт.' : '';
+    if (url.searchParams.has('plan')) {
+      try {
+        const raw = url.searchParams.get('plan');
+        if (raw.length > 8192) throw new Error('Plan too large');
+        plan = X.normalizePlan(JSON.parse(raw), services);
+        X.storage.savePlan(plan);
+        restoredMessage =
+          'Услуги перенесены в расчёт. Можно изменить варианты или класс автомобиля.';
+      } catch (error) {
+        restoredMessage = 'Не удалось прочитать переданный подбор. Восстановлен предыдущий расчёт.';
+      }
+      url.searchParams.delete('plan');
+      history.replaceState(null, '', url.pathname + url.search + url.hash);
+    }
+    state.carClass = plan.carClass;
+    state.items = plan.items;
+  }
+
+  function syncCalculatorFields() {
+    B.$$('input[name="carClass"]', B.$('#calc')).forEach(function (input) {
+      input.checked = Number(input.value) === state.carClass;
+    });
+    services.forEach(function (service) {
+      const check = B.$('#calc-' + service.slug);
+      const select = B.$('[data-variant="' + service.slug + '"]');
+      check.checked = Boolean(state.items[service.slug]);
+      select.disabled = !check.checked;
+      select.value = state.items[service.slug] || service.variants[0].id;
+    });
+  }
 
   function discountRate(count) {
     if (count >= 3) return 0.1;
@@ -349,8 +393,12 @@
       '<span class="calc-summary__note" id="calc-days"></span></div>' +
       '<button class="btn btn-light booking-button-compact" type="button" id="calc-book" disabled>Записаться с этим расчётом</button>' +
       '<p class="calc-summary__note">Расчёт предварительный. Точную цену назовём после осмотра, и она не изменится в процессе работы.</p>' +
+      '<div class="feature-actions"><button class="btn btn-outline-light btn-sm" type="button" id="calc-save">Сохранить расчёт</button><button class="btn btn-outline-light btn-sm" type="button" id="calc-reset">Сбросить</button></div>' +
+      '<p id="calc-save-status" class="small muted" role="status"></p>' +
+      '<div id="calc-care"></div>' +
       '</aside>';
 
+    syncCalculatorFields();
     const form = B.$('#calc-form');
     form.addEventListener('change', function (e) {
       const t = e.target;
@@ -389,10 +437,25 @@
       });
     });
 
-    updateCalc();
+    B.$('#calc-save').addEventListener('click', function () {
+      updateCalc();
+    });
+    B.$('#calc-reset').addEventListener('click', function () {
+      state.carClass = 2;
+      state.items = {};
+      syncCalculatorFields();
+      updateCalc();
+      B.$('#calc-save-status').textContent = X.storage.persistent()
+        ? 'Расчёт сброшен и сохранён пустым.'
+        : 'Расчёт сброшен. Сохранение в браузере недоступно.';
+    });
+    updateCalc(false);
+    B.$('#calc-save-status').textContent = X.storage.persistent()
+      ? restoredMessage || 'Выбор сохраняется автоматически в этом браузере.'
+      : 'Сохранение в браузере недоступно. Выбор действует до закрытия страницы.';
   }
 
-  function updateCalc() {
+  function updateCalc(persist = true) {
     services.forEach(function (s) {
       const select = B.$('[data-variant="' + s.slug + '"]');
       const v = s.variants.find(function (x) {
@@ -434,6 +497,20 @@
       ? 'Срок около ' + est.days + ' ' + B.plural(est.days, ['дня', 'дней', 'дней'])
       : '';
     B.$('#calc-book').disabled = !est.lines.length;
+    const selected = est.lines.map((line) => line.service);
+    B.$('#calc-care').innerHTML = selected.length
+      ? '<details class="calc-care"><summary>Памятка для выбранных услуг</summary>' +
+        X.careHTML(selected) +
+        '<button class="btn btn-outline-light btn-sm" type="button" data-care-services="' +
+        selected.join(',') +
+        '">Открыть и скачать памятку</button></details>'
+      : '';
+    if (persist) {
+      const saved = X.storage.savePlan(state);
+      B.$('#calc-save-status').textContent = saved
+        ? 'Расчёт сохранён в этом браузере.'
+        : 'Не удалось сохранить. Выбор действует до закрытия страницы.';
+    }
   }
 
   /* ---------- Старт ---------- */
@@ -446,6 +523,7 @@
       function (data) {
         services = data[0];
         classes = data[1];
+        restoreCalculator();
         renderCards();
         renderPriceTable(state.carClass);
         renderClassPicker(B.$('#price-classes'), 'price-class', state.carClass, highlightClass);

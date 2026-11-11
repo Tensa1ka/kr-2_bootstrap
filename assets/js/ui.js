@@ -181,6 +181,10 @@
       if (e.target.closest('[data-close]')) dialog.close();
     });
     dialog.addEventListener('hidden.bs.modal', function () {
+      if (dialog.suspended) {
+        dialog.suspended = false;
+        return;
+      }
       dialog.dispatchEvent(new Event('close'));
       // A policy may be opened from a form: restore the form and its focus.
       if (dialog.previousModal) {
@@ -198,6 +202,7 @@
       const previous = $('.modal.show');
       dialog.returnFocus = document.activeElement;
       if (previous && previous !== dialog) {
+        previous.suspended = true;
         bootstrap.Modal.getOrCreateInstance(previous).hide();
         dialog.previousModal = previous;
       }
@@ -462,6 +467,19 @@
             ' в течение 15 минут в рабочее время.',
           'Хорошо',
         );
+        const slugs = payload.estimate
+          ? payload.estimate.lines.map((line) => line.service)
+          : payload.service
+            ? [payload.service]
+            : [];
+        if (slugs.length && window.BlikExperience) {
+          body.insertAdjacentHTML(
+            'beforeend',
+            '<button class="btn btn-outline-light btn-sm feature-action" type="button" data-care-services="' +
+              esc(slugs.join(',')) +
+              '">Памятка по выбранным услугам</button>',
+          );
+        }
         $('[data-close]', body).focus();
       },
     );

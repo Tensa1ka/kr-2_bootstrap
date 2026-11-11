@@ -86,6 +86,10 @@
       src="assets/js/ui.js"
     ></script>
     <script
+      src="assets/js/experience.js"
+      defer
+    ></script>
+    <script
       defer=""
       src="assets/js/home.js"
     ></script>
@@ -302,6 +306,11 @@
           </p>
           <div class="hero__actions">
             <a
+              class="btn btn-outline-light"
+              href="#care-quiz"
+              >Подобрать уход</a
+            >
+            <a
               class="btn btn-light"
               data-booking=""
               href="about.html#request"
@@ -329,6 +338,43 @@
           Проведите курсором по фото: так мастер видит лак под лампой осмотра
         </p>
       </section>
+      <section
+        class="section section--surface"
+        id="care-quiz"
+        aria-labelledby="care-quiz-title"
+      >
+        <div class="container">
+          <div class="row g-4 align-items-start">
+            <div class="col-12 col-lg-5 section-head__text">
+              <p class="eyebrow">Уход под вашу задачу</p>
+              <h2
+                class="h2"
+                id="care-quiz-title"
+              >
+                Что нужно вашему автомобилю?
+              </h2>
+              <p class="lead">
+                Пять коротких вопросов о машине, кузове, задаче и бюджете. Подберём отправную точку
+                и перенесём услуги в расчёт.
+              </p>
+              <p class="muted">
+                Рекомендация предварительная. Повреждения краски и состояние лака оцениваем на
+                бесплатном осмотре.
+              </p>
+            </div>
+            <div class="col-12 col-lg-7">
+              <div
+                class="feature-panel"
+                data-care-quiz
+                aria-label="Подбор ухода"
+              >
+                <p class="muted">Загружаем вопросы…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section
         aria-labelledby="services-title"
         class="section"
